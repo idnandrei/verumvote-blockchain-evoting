@@ -1,0 +1,7 @@
+# Ignore nested Git repositories
+contracts/.git
+frontend/.git
+
+# Keep the actual files
+!contracts/
+!frontend/

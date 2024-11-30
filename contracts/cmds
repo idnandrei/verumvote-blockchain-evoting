@@ -1,0 +1,17 @@
+//Cast
+
+//cast vote
+cast send 0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0 "castVote(string,string)" "Qmabcdef1234567890abcdef1234567890abcdef12" "0xabcdefabcdefabcdefabcdefabcdefabcdefabcdef" --private-key 0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d --rpc-url $RPC_URL -- --dry-run
+
+//verify vote
+cast call 0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0 "votes(uint256)(address,string,string,uint256,bool)" 2 --rpc-url $RPC_URL
+
+
+//check balance
+cast call 0x5FbDB2315678afecb367f032d93F642f64180aa3 "balanceOf(address)(uint256)" 0x70997970C51812dc3A010C7d01b50e0d17dc79C8 --rpc-url $RPC_URL
+
+//checkk if initialized
+cast call 0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0 "isInitialized()(bool)" --rpc-url $RPC_URL --private-key $PRIVATE_KEY
+
+//Deploy
+forge script script/DeployVoting.s.sol:DeployVoting --rpc-url "$RPC_URL" --private-key "$PRIVATE_KEY" --broadcast 
