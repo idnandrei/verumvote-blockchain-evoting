@@ -17,6 +17,7 @@ export default function VotingForm() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { toast } = useToast();
   const [isCheckingBalance, setIsCheckingBalance] = useState(false);
+  const [voteHash, setVoteHash] = useState<string | null>(null);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,6 +59,7 @@ export default function VotingForm() {
       if (!response.ok) throw new Error(data.error || "Failed to submit vote");
 
       setCid(data.cid);
+      setVoteHash(data.hash);
     } catch (error: any) {
       const errorMsg = error.message || "Unexpected error occurred.";
       setErrorMessage(errorMsg);
@@ -129,8 +131,11 @@ export default function VotingForm() {
         <div className="mt-6 p-4 border border-green-500 rounded-md">
           <h2 className="text-green-700 font-bold">Vote Submitted!</h2>
           <p>
-            Your vote has been recorded successfully. CID:{" "}
-            <span className="font-mono">{cid}</span>
+            Your vote has been recorded successfully. Please store these values:
+            <br />
+            CID: <span className="font-mono">{cid}</span>
+            <br />
+            Vote Hash: <span className="font-mono">{voteHash}</span>
           </p>
         </div>
       )}

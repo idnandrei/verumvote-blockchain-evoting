@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { encryptVotes, getStoredPublicKey } from "../../../utils/encryption";
 import { getContract } from "../../../utils/getContract";
 import { PinataSDK } from "pinata";
+import { keccak256 } from "js-sha3";
 
 const pinata = new PinataSDK({
   pinataJwt: process.env.NEXT_PUBLIC_PINATA_JWT,
@@ -21,9 +22,10 @@ export async function POST(req: NextRequest) {
     }
 
     const encryptedResult = await encryptVotes(voteData, publicKey);
+    const encryptedHash = keccak256(JSON.stringify(encryptedResult));
     const result = await pinata.upload.json({
-      content: encryptedResult,
-      name: "vote-record",
+      vote: encryptedResult,
+      hash: encryptedHash,
     });
 
     if (!result.cid) {
@@ -43,6 +45,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         success: true,
         cid: result.cid,
+        hash: encryptedHash,
         transactionHash: receipt.hash,
       });
     } catch (error: any) {

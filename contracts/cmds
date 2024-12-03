@@ -14,4 +14,4 @@ cast call 0x5FbDB2315678afecb367f032d93F642f64180aa3 "balanceOf(address)(uint256
 cast call 0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0 "isInitialized()(bool)" --rpc-url $RPC_URL --private-key $PRIVATE_KEY
 
 //Deploy
-forge script script/DeployVoting.s.sol:DeployVoting --rpc-url "$RPC_URL" --private-key "$PRIVATE_KEY" --broadcast 
+forge script script/DeployVoting.s.sol:DeployVoting --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast 
