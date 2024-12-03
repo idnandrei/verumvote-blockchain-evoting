@@ -3,6 +3,7 @@ import { encryptVotes, getStoredPublicKey } from "../../../utils/encryption";
 import { getContract } from "../../../utils/getContract";
 import { PinataSDK } from "pinata";
 import { keccak256 } from "js-sha3";
+import { RawVoteData, VoteRecord, VoteSubmissionResponse } from "@/lib/types";
 
 const pinata = new PinataSDK({
   pinataJwt: process.env.NEXT_PUBLIC_PINATA_JWT,
@@ -26,7 +27,7 @@ export async function POST(req: NextRequest) {
     const result = await pinata.upload.json({
       vote: encryptedResult,
       hash: encryptedHash,
-    });
+    } as VoteRecord);
 
     if (!result.cid) {
       throw new Error("Failed to get CID from Pinata");
@@ -34,12 +35,12 @@ export async function POST(req: NextRequest) {
 
     const contractWithSigner = await getContract({
       withSigner: true,
-      signer: process.env.TEST_VOTER_PKEY,
+      signer: process.env.TEST_VOTER3_PKEY,
       tokenContract: false,
     });
 
     try {
-      const tx = await contractWithSigner.castVote(result.cid, "2131231");
+      const tx = await contractWithSigner.castVote(result.cid, encryptedHash);
       const receipt = await tx.wait(1);
 
       return NextResponse.json({
@@ -47,7 +48,7 @@ export async function POST(req: NextRequest) {
         cid: result.cid,
         hash: encryptedHash,
         transactionHash: receipt.hash,
-      });
+      } as VoteSubmissionResponse);
     } catch (error: any) {
       const errorMessage = error.message || "Unknown contract error";
       console.error("Contract error:", errorMessage);

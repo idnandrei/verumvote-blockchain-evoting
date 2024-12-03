@@ -1,3 +1,4 @@
+import { RawVoteData, VoteRecord } from "@/lib/types";
 import { generateRandomKeys, PublicKey, PrivateKey } from "paillier-bigint";
 
 const MIN_KEY_SIZE = 2048;
@@ -48,18 +49,27 @@ export async function initializeElectionKeys() {
 }
 
 export async function encryptVotes(
-  voteData: Record<string, number>,
+  voteData: RawVoteData,
   publicKey: PublicKey
-): Promise<Record<string, string>> {
+): Promise<VoteRecord["vote"]> {
   const encryptedData: Record<string, string> = {};
 
   for (const [candidate, vote] of Object.entries(voteData)) {
-    // Add randomization to encryption
-    const randomFactor = BigInt(Math.floor(Math.random() * 1000000));
-    const message = BigInt(vote) + randomFactor * BigInt(0); // Zero-knowledge padding
-    const encrypted = publicKey.encrypt(message);
+    // Generate a random value for the encryption
+    const message = BigInt(vote);
+    const encrypted = publicKey.encrypt(message); // The library handles randomization internally
     encryptedData[candidate] = encrypted.toString();
   }
 
   return encryptedData;
+}
+
+export function decryptVote(
+  encryptedVote: string | bigint,
+  privateKey: PrivateKey
+): bigint {
+  const encryptedBigInt =
+    typeof encryptedVote === "string" ? BigInt(encryptedVote) : encryptedVote;
+  const decryptedValue = privateKey.decrypt(encryptedBigInt);
+  return decryptedValue;
 }

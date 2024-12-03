@@ -5,6 +5,11 @@ import BallotForm from "@/components/BallotForm";
 import { useToast } from "@/hooks/use-toast";
 import { allCandidates, type Candidate } from "@/lib/candidates";
 import { Button } from "@/components/ui/button";
+import {
+  RawVoteData,
+  VoteSubmissionResponse,
+  VoteSubmissionResult,
+} from "@/lib/types";
 
 export default function VotingForm() {
   const [selections, setSelections] = useState<Candidate>({
@@ -26,12 +31,12 @@ export default function VotingForm() {
     setErrorMessage(null);
 
     // Create vote data object with binary values
-    const voteData = Object.values(allCandidates)
+    const voteData: RawVoteData = Object.values(allCandidates)
       .flat()
       .reduce((acc, candidate) => {
         acc[candidate] = 0;
         return acc;
-      }, {} as Record<string, number>);
+      }, {} as RawVoteData);
 
     // Update selected candidates
     if (selections.president) voteData[selections.president] = 1;
@@ -55,8 +60,10 @@ export default function VotingForm() {
         body: JSON.stringify({ voteData }),
       });
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Failed to submit vote");
+      const data: VoteSubmissionResult = await response.json();
+      if (!response.ok || "error" in data) {
+        throw new Error("error" in data ? data.error : "Failed to submit vote");
+      }
 
       setCid(data.cid);
       setVoteHash(data.hash);

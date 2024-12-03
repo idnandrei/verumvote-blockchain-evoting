@@ -2,6 +2,7 @@
 
 import VotingSystemControls from "@/components/VotingSystemControls";
 import InitializeVotingForm from "@/components/InitializeVotingForm";
+import CheckVotes from "@/components/CheckVotes";
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
         <VotingSystemControls />
         <InitializeVotingForm />
       </div>
+      <CheckVotes />
     </main>
   );
 }
