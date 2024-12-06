@@ -10,11 +10,11 @@ export async function GET() {
       tokenContract: true,
     });
 
-    if (!process.env.TEST_VOTER3_ADDRESS) {
-      throw new Error("TEST_VOTER3_ADDRESS not found in environment variables");
+    if (!process.env.TEST_VOTER2_ADDRESS) {
+      throw new Error("TEST_VOTER2_ADDRESS not found in environment variables");
     }
 
-    const address = ethers.getAddress(process.env.TEST_VOTER3_ADDRESS);
+    const address = ethers.getAddress(process.env.TEST_VOTER2_ADDRESS);
     const balance = await contract.balanceOf(address);
     console.log("Balance retrieved:", balance);
 
