@@ -20,12 +20,11 @@ export async function getContract({
     throw new Error("Missing environment variables");
   }
 
-  const provider = new JsonRpcProvider(rpcUrl);
+  const httpUrl = rpcUrl.replace("wss://", "https://");
+  const provider = new JsonRpcProvider(httpUrl);
 
-  // Explicitly create the contract interface
   const abi = tokenContract ? VotingTokenABI : VotingSystemABI;
   const contractInterface = new ethers.Interface(abi);
-
   const address = tokenContract ? votingTokenAddress : votingAddress;
 
   if (withSigner && signer) {

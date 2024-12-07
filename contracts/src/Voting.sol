@@ -96,9 +96,6 @@ contract VoteRecordSystem is Ownable, Pausable, ReentrancyGuard {
             return block.timestamp;
         }   
 
-    function checkBalance() external view returns (uint256) {
-        return votingToken.balanceOf(msg.sender);
-    }
 
     function castVote(
     string calldata ipfsCid,
@@ -106,6 +103,7 @@ contract VoteRecordSystem is Ownable, Pausable, ReentrancyGuard {
 ) 
     external
     nonReentrant
+    whenNotPaused
     onlyDuringVotingPeriod
     hasNotVotedYet
 {
@@ -135,19 +133,6 @@ contract VoteRecordSystem is Ownable, Pausable, ReentrancyGuard {
 }
 
 
-    function verifyVote(
-        uint256 voteIndex,
-        string calldata hash
-    ) external {
-        require(voteIndex < totalVotes, "Invalid vote index");
-        
-        Vote storage vote = votes[voteIndex];
-        bool isVerified = keccak256(abi.encodePacked(hash)) == 
-                         keccak256(abi.encodePacked(vote.verificationHash));
-        
-        vote.isVerified = isVerified;
-        emit VoteVerified(voteIndex, isVerified);
-    }
 
 
     function closeVotingPeriod() external onlyOwner {
@@ -172,25 +157,18 @@ contract VoteRecordSystem is Ownable, Pausable, ReentrancyGuard {
         emit VotingPeriodForceEnded(originalEnd, endTime);
     }
 
-    // function getVote(uint256 voteIndex)
-    //     external
-    //     view
-    //     returns (
-    //         address voter,
-    //         string memory ipfsCid,
-    //         string memory verificationHash,
-    //         uint256 timestamp,
-    //         bool isVerified
-    //     )
-    // {
+    // function verifyVote(
+    //     uint256 voteIndex,
+    //     string calldata hash
+    // ) external {
     //     require(voteIndex < totalVotes, "Invalid vote index");
+        
     //     Vote storage vote = votes[voteIndex];
-    //     return (
-    //         vote.voter,
-    //         vote.ipfsCid,
-    //         vote.verificationHash,
-    //         vote.timestamp,
-    //         vote.isVerified
-    //     );
+    //     bool isVerified = keccak256(abi.encodePacked(hash)) == 
+    //                      keccak256(abi.encodePacked(vote.verificationHash));
+        
+    //     vote.isVerified = isVerified;
+    //     emit VoteVerified(voteIndex, isVerified);
     // }
+
 }

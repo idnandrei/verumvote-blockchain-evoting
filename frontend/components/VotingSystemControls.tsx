@@ -12,10 +12,9 @@ import {
 } from "../components/ui/card";
 
 export default function VotingSystemControls() {
-  const [voteNumber, setVoteNumber] = useState("");
-  const [address, setAddress] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const [voteCount, setVoteCount] = useState<number | null>(null);
 
   const checkInitialized = async () => {
     setIsLoading(true);
@@ -38,72 +37,6 @@ export default function VotingSystemControls() {
         variant: "destructive",
       });
       console.error("Detailed error:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const checkVote = async () => {
-    if (!voteNumber) {
-      toast({
-        title: "Error",
-        description: "Please enter a vote number",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const response = await fetch(`/api/check-vote?number=${voteNumber}`);
-      const data = await response.json();
-      toast({
-        title: "Vote Check Result",
-        description: `Vote ${data.voteNumber} is ${
-          data.isValid ? "valid" : "invalid"
-        }`,
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description:
-          error instanceof Error ? error.message : "An unknown error occurred",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const checkBalance = async () => {
-    if (!address) {
-      toast({
-        title: "Error",
-        description: "Please enter a hash address",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const response = await fetch(
-        `/api/check-balance?address=${encodeURIComponent(address)}`
-      );
-      const data = await response.json();
-      toast({
-        title: "Balance Check Result",
-        description: `Balance for address ${
-          data.address
-        }: $${data.balance.toFixed(2)}`,
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description:
-          error instanceof Error ? error.message : "An unknown error occurred",
-        variant: "destructive",
-      });
     } finally {
       setIsLoading(false);
     }
@@ -247,15 +180,91 @@ export default function VotingSystemControls() {
     }
   };
 
+  const getNumberOfVotes = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/get-number-of-votes");
+      const data = await response.json();
+      setVoteCount(data.numberOfVotes);
+      toast({
+        title: "Total Votes",
+        description: `Current number of votes: ${data.numberOfVotes}`,
+      });
+    } catch (error) {
+      setVoteCount(null);
+      toast({
+        title: "Error",
+        description:
+          error instanceof Error ? error.message : "Failed to fetch vote count",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const togglePause = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/toggle-pause", {
+        method: "POST",
+      });
+      const data = await response.json();
+
+      toast({
+        title: "Success",
+        description: `Voting system has been ${
+          data.isPaused ? "paused" : "unpaused"
+        }`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to toggle pause state",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Card className="w-full h-full">
       <CardHeader>
         <CardTitle>Voting System Controls</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex items-center space-x-2 justify-center">
+        <div className="grid grid-cols-2 gap-4">
+          {/* First row */}
           <Button onClick={checkInitialized} disabled={isLoading}>
             Check Initialized
+          </Button>
+          <Button onClick={votingPeriodDetails} disabled={isLoading}>
+            Voting Period Details
+          </Button>
+
+          {/* Second row - Vote count spans full width */}
+          <div className="col-span-2 flex flex-col gap-2">
+            <Button
+              onClick={getNumberOfVotes}
+              disabled={isLoading}
+              className="w-full"
+            >
+              Number of Votes
+            </Button>
+            {voteCount !== null && (
+              <div className="text-center p-2 bg-secondary rounded-md">
+                Current Votes: {voteCount}
+              </div>
+            )}
+          </div>
+
+          {/* Third row */}
+          <Button onClick={closeVotingPeriod} disabled={isLoading}>
+            Close Voting Period
           </Button>
           <Button
             onClick={forceEndVotingPeriod}
@@ -264,36 +273,17 @@ export default function VotingSystemControls() {
           >
             Force End Voting
           </Button>
-        </div>
 
-        <div className="flex items-center space-x-2">
-          <Input
-            placeholder="Enter vote number"
-            value={voteNumber}
-            onChange={(e) => setVoteNumber(e.target.value)}
-          />
-          <Button onClick={checkVote} disabled={isLoading}>
-            Check Vote
+          {/* Fourth row  */}
+          <Button onClick={() => togglePause()} disabled={isLoading}>
+            Unpause Voting
           </Button>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <Input
-            placeholder="Enter hash address"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-          />
-          <Button onClick={checkBalance} disabled={isLoading}>
-            Check Balance
-          </Button>
-        </div>
-
-        <div className="flex items-center space-x-2 justify-center">
-          <Button onClick={votingPeriodDetails} disabled={isLoading}>
-            Voting Period Details
-          </Button>
-          <Button onClick={closeVotingPeriod} disabled={isLoading}>
-            Close Voting Period
+          <Button
+            onClick={() => togglePause()}
+            disabled={isLoading}
+            variant="destructive"
+          >
+            Pause Voting
           </Button>
         </div>
       </CardContent>

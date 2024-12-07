@@ -10,6 +10,8 @@ import {
   VoteSubmissionResponse,
   VoteSubmissionResult,
 } from "@/lib/types";
+import { Eip1193Provider, ethers } from "ethers";
+import { getSigner } from "../../../utils/metamask";
 
 export default function VotingForm() {
   const [selections, setSelections] = useState<Candidate>({
@@ -45,19 +47,24 @@ export default function VotingForm() {
       voteData[senator] = 1;
     });
 
-    // Debug logs
-    console.log("Current Selections:", {
-      president: selections.president,
-      vicePresident: selections.vicePresident,
-      senators: selections.senators,
-    });
-    console.log("Vote Record:", voteData);
-
     try {
+      // Check if MetaMask is installed
+      if (!window.ethereum) {
+        throw new Error("Please install MetaMask to use this feature");
+      }
+
+      // Get the signer's address from MetaMask using ethers v6 syntax
+      const provider = new ethers.BrowserProvider(
+        window.ethereum as Eip1193Provider
+      );
+      await provider.send("eth_requestAccounts", []);
+      const signer = await provider.getSigner();
+      const signerAddress = await signer.getAddress();
+
       const response = await fetch("api/votes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ voteData }),
+        body: JSON.stringify({ voteData, signerAddress }),
       });
 
       const data: VoteSubmissionResult = await response.json();
@@ -83,9 +90,16 @@ export default function VotingForm() {
   const checkMyTokens = async () => {
     setIsCheckingBalance(true);
     try {
-      const response = await fetch("/api/check-my-tokens");
-      const data = await response.json();
+      const signer = await getSigner();
+      const signerAddress = await signer.getAddress();
 
+      const response = await fetch("/api/check-my-tokens", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ signerAddress }),
+      });
+
+      const data = await response.json();
       if (!response.ok) {
         throw new Error(data.error);
       }

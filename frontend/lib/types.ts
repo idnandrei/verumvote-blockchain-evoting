@@ -1,3 +1,30 @@
+declare global {
+  interface Window {
+    ethereum?: {
+      isMetaMask?: boolean;
+      request: (args: {
+        method: string;
+        params?: readonly unknown[] | object;
+      }) => Promise<unknown>;
+      on: (event: string, listener: (args: unknown[]) => void) => void;
+      removeListener: (
+        event: string,
+        listener: (args: unknown[]) => void
+      ) => void;
+      selectedAddress: string | null;
+      isConnected: () => boolean;
+      chainId: string;
+      networkVersion: string;
+      _state: {
+        accounts: string[];
+        isConnected: boolean;
+        isUnlocked: boolean;
+        initialized: boolean;
+      };
+    };
+  }
+}
+
 export type VoteData = {
   president: string;
   vicePresident: string;

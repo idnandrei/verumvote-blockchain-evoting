@@ -13,7 +13,8 @@ const pinata = new PinataSDK({
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { voteData } = body;
+    //const { voteData } = body;
+    const { voteData, signerAddress } = body;
 
     const publicKey = getStoredPublicKey();
     if (!publicKey) {
@@ -35,7 +36,8 @@ export async function POST(req: NextRequest) {
 
     const contractWithSigner = await getContract({
       withSigner: true,
-      signer: process.env.TEST_VOTER2_PKEY,
+      // signer: signerAddress,
+      signer: process.env.TEST_VOTER_PKEY,
       tokenContract: false,
     });
 

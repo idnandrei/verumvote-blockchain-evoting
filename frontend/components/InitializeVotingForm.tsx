@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { getSigner } from "../utils/metamask";
 
 export default function InitializeVotingForm() {
   const [startDateTime, setStartDateTime] = useState("");
@@ -25,6 +26,9 @@ export default function InitializeVotingForm() {
 
     setIsLoading(true);
     try {
+      const signer = await getSigner();
+      const signerAddress = await signer.getAddress();
+
       const response = await fetch("api/initialize", {
         method: "POST",
         headers: {
@@ -33,6 +37,7 @@ export default function InitializeVotingForm() {
         body: JSON.stringify({
           startDateTime,
           duration: parseFloat(duration),
+          signerAddress,
         }),
       });
 
