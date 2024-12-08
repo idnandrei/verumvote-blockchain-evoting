@@ -16,13 +16,6 @@ export const VotingSystemABI = [
   },
   {
     type: "function",
-    name: "checkBalance",
-    inputs: [],
-    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
-    stateMutability: "view",
-  },
-  {
-    type: "function",
     name: "closeVotingPeriod",
     inputs: [],
     outputs: [],
@@ -143,16 +136,6 @@ export const VotingSystemABI = [
     type: "function",
     name: "unpause",
     inputs: [],
-    outputs: [],
-    stateMutability: "nonpayable",
-  },
-  {
-    type: "function",
-    name: "verifyVote",
-    inputs: [
-      { name: "voteIndex", type: "uint256", internalType: "uint256" },
-      { name: "hash", type: "string", internalType: "string" },
-    ],
     outputs: [],
     stateMutability: "nonpayable",
   },
@@ -352,7 +335,10 @@ export const VotingTokenABI = [
   {
     type: "function",
     name: "mint",
-    inputs: [],
+    inputs: [
+      { name: "to", type: "address", internalType: "address" },
+      { name: "amount", type: "uint256", internalType: "uint256" },
+    ],
     outputs: [],
     stateMutability: "nonpayable",
   },
@@ -362,6 +348,20 @@ export const VotingTokenABI = [
     inputs: [],
     outputs: [{ name: "", type: "string", internalType: "string" }],
     stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "owner",
+    inputs: [],
+    outputs: [{ name: "", type: "address", internalType: "address" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "renounceOwnership",
+    inputs: [],
+    outputs: [],
+    stateMutability: "nonpayable",
   },
   {
     type: "function",
@@ -399,6 +399,13 @@ export const VotingTokenABI = [
     stateMutability: "nonpayable",
   },
   {
+    type: "function",
+    name: "transferOwnership",
+    inputs: [{ name: "newOwner", type: "address", internalType: "address" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
     type: "event",
     name: "Approval",
     inputs: [
@@ -419,6 +426,25 @@ export const VotingTokenABI = [
         type: "uint256",
         indexed: false,
         internalType: "uint256",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "OwnershipTransferred",
+    inputs: [
+      {
+        name: "previousOwner",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "newOwner",
+        type: "address",
+        indexed: true,
+        internalType: "address",
       },
     ],
     anonymous: false,
@@ -485,5 +511,15 @@ export const VotingTokenABI = [
     type: "error",
     name: "ERC20InvalidSpender",
     inputs: [{ name: "spender", type: "address", internalType: "address" }],
+  },
+  {
+    type: "error",
+    name: "OwnableInvalidOwner",
+    inputs: [{ name: "owner", type: "address", internalType: "address" }],
+  },
+  {
+    type: "error",
+    name: "OwnableUnauthorizedAccount",
+    inputs: [{ name: "account", type: "address", internalType: "address" }],
   },
 ] as const;

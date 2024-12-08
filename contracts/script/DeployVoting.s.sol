@@ -2,7 +2,7 @@
 pragma solidity ^0.8.19;
 
 import {Script, console2} from "lib/forge-std/src/Script.sol";
-import {VoteRecordSystem} from "../src/Voting.sol";
+import {VotingSystem} from "../src/Voting.sol";
 import {VotingToken} from "../src/VotingToken.sol";
 import {MerkleAirdrop} from "../src/MerkleAirdrop.sol";
 import {IERC20} from "@openzeppelin/token/ERC20/IERC20.sol";
@@ -14,7 +14,7 @@ contract DeployVoting is Script {
     function run() public {
         vm.startBroadcast();
         
-        bytes32 s_merkleRoot = 0x57da7ad418726d01685c32c1e738eeef4e863577f557e4fc318f5741173df5db;
+        bytes32 s_merkleRoot = 0xbd0673728cc32da06271cb4a7bdd925d8a5cf25f7b97d06af9bbda95a80688f0;
         
         // Deploy contracts
         VotingToken token = new VotingToken();
@@ -24,8 +24,8 @@ contract DeployVoting is Script {
         console2.log("MerkleAirdrop deployed to:", address(airdrop));
 
 
-        VoteRecordSystem voting = new VoteRecordSystem();
-        console2.log("VoteRecordSystem deployed to:", address(voting));
+        VotingSystem voting = new VotingSystem();
+        console2.log("VotingSystem deployed to:", address(voting));
 
         vm.stopBroadcast();
     }

@@ -8,7 +8,7 @@ import "../lib/openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol";
 import "./VotingToken.sol";
 
 
-contract VoteRecordSystem is Ownable, Pausable, ReentrancyGuard {
+contract VotingSystem is Ownable, Pausable, ReentrancyGuard {
 
     // Structs
     struct Vote {
@@ -16,7 +16,6 @@ contract VoteRecordSystem is Ownable, Pausable, ReentrancyGuard {
         string ipfsCid;
         string verificationHash;
         uint256 timestamp;
-        bool isVerified;
     }
 
     // State variables
@@ -122,8 +121,7 @@ contract VoteRecordSystem is Ownable, Pausable, ReentrancyGuard {
         voter: msg.sender,
         ipfsCid: ipfsCid,
         verificationHash: verificationHash,
-        timestamp: block.timestamp,
-        isVerified: false
+        timestamp: block.timestamp
     });
 
     hasVoted[msg.sender] = true;

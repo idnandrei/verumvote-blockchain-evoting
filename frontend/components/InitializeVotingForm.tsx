@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { getSigner } from "../utils/metamask";
+import { ElectionKeysToast } from "./ElectionKeysToast";
 
 export default function InitializeVotingForm() {
   const [startDateTime, setStartDateTime] = useState("");
@@ -47,12 +48,19 @@ export default function InitializeVotingForm() {
         throw new Error(data.error);
       }
 
-      setElectionKeys(data.electionKeys);
+      // Show success toast
       toast({
         title: "Success",
         description: `Initialization successful. Start: ${new Date(
           data.startDateTime
         ).toLocaleString()}, Duration: ${data.duration}h`,
+      });
+
+      // Show election keys in a separate toast
+      toast({
+        title: "Election Keys (Save these securely)",
+        description: <ElectionKeysToast electionKeys={data.electionKeys} />,
+        duration: 20000, // 20 seconds
       });
     } catch (error: any) {
       toast({
@@ -95,27 +103,6 @@ export default function InitializeVotingForm() {
         >
           Initialize Voting Period
         </Button>
-
-        {electionKeys && (
-          <div className="mt-4 p-4 border rounded-md space-y-2">
-            <h3 className="font-bold">Election Keys (Save these securely)</h3>
-            <div>
-              <h4 className="font-semibold">Public Key:</h4>
-              <div className="bg-gray-100 p-2 rounded overflow-x-auto">
-                <p>n: {electionKeys.publicKey.n}</p>
-                <p>g: {electionKeys.publicKey.g}</p>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-semibold">Private Key:</h4>
-              <div className="bg-gray-100 p-2 rounded overflow-x-auto">
-                <p>lambda: {electionKeys.privateKey.lambda}</p>
-                <p>mu: {electionKeys.privateKey.mu}</p>
-                <p>n: {electionKeys.privateKey.n}</p>
-              </div>
-            </div>
-          </div>
-        )}
       </CardContent>
     </Card>
   );

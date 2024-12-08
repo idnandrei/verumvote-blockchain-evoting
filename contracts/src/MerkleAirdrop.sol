@@ -19,7 +19,7 @@ contract MerkleAirdrop is EIP712 {
     IERC20 private immutable i_airdropToken;
     bytes32 private immutable i_merkleRoot;
     mapping(address => bool) private s_hasClaimed;
-    uint256 public constant FIXED_AMOUNT = 1 * 10 ** 18;
+    uint256 public constant FIXED_AMOUNT = 1;
 
 
     bytes32 private constant MESSAGE_TYPEHASH = keccak256("AirdropClaim(address account,uint256 amount)");

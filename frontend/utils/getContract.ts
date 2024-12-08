@@ -1,9 +1,9 @@
-import { ethers, Wallet, JsonRpcProvider } from "ethers";
+import { ethers, Wallet, JsonRpcProvider, Signer } from "ethers";
 import { VotingSystemABI, VotingTokenABI } from "@/lib/contracts/abi";
 
 type ContractConfig = {
   withSigner?: boolean;
-  signer?: Wallet | string;
+  signer?: Wallet | string | Signer;
   tokenContract?: boolean;
 };
 
@@ -28,9 +28,14 @@ export async function getContract({
   const address = tokenContract ? votingTokenAddress : votingAddress;
 
   if (withSigner && signer) {
-    const wallet =
-      typeof signer === "string" ? new Wallet(signer, provider) : signer;
-    return new ethers.Contract(address, contractInterface, wallet);
+    if (signer instanceof Wallet) {
+      return new ethers.Contract(address, contractInterface, signer);
+    }
+    if (typeof signer === "string") {
+      const wallet = new Wallet(signer, provider);
+      return new ethers.Contract(address, contractInterface, wallet);
+    }
+    return new ethers.Contract(address, contractInterface, signer);
   }
 
   return new ethers.Contract(address, contractInterface, provider);
