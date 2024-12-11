@@ -36,9 +36,11 @@ export async function POST(req: NextRequest) {
 
     const contractWithSigner = await getContract({
       withSigner: true,
-      // signer: process.env.TEST_VOTER3_PKEY,
-      signer: process.env.TEST_VOTER2_PKEY,
       // signer: process.env.TEST_VOTER_PKEY,
+      // signer: process.env.TEST_VOTER1_PKEY,
+      // signer: process.env.TEST_VOTER2_PKEY,
+      // signer: process.env.TEST_VOTER3_PKEY,
+      signer: process.env.TEST_VOTER4_PKEY,
       tokenContract: false,
     });
 

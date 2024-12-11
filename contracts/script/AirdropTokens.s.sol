@@ -13,9 +13,8 @@ contract AirdropTokens is Script {
     function run() public {
         vm.startBroadcast();
         
-        // You'll need to replace these with your deployed contract addresses
-        address tokenAddress = address(0x2F109fE0f94Fe098FE22Ed3958eBEb55f7809247); // Replace with your deployed VotingToken address
-        address airdropAddress = address(0xb30619A5739BCF085D4d77b2f6DE5788d067fF2f); // Replace with your deployed MerkleAirdrop address
+        address tokenAddress = address(0x5FbDB2315678afecb367f032d93F642f64180aa3);
+        address airdropAddress = address(0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512);
         
         VotingToken token = VotingToken(tokenAddress);
         MerkleAirdrop airdrop = MerkleAirdrop(airdropAddress);
@@ -26,8 +25,8 @@ contract AirdropTokens is Script {
         string memory json = vm.readFile(path);
 
         // Create arrays for addresses and proofs
-        address[] memory addresses = new address[](8);
-        bytes32[][] memory proofs = new bytes32[][](8);
+        address[] memory addresses = new address[](5);
+        bytes32[][] memory proofs = new bytes32[][](5);
 
 
         // Parse JSON data
@@ -38,7 +37,7 @@ contract AirdropTokens is Script {
         proofs = abi.decode(rawProofs, (bytes32[][]));
 
         // Only mint tokens to the airdrop contract
-        token.mint(address(airdrop), 10); // Since FIXED_AMOUNT is 1
+        token.mint(address(airdrop), 5); 
 
         // Add balance check
         console2.log("Airdrop contract balance:", token.balanceOf(address(airdrop)));

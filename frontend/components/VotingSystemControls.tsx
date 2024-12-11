@@ -203,19 +203,21 @@ export default function VotingSystemControls() {
     }
   };
 
-  const togglePause = async () => {
+  const pauseVoting = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/toggle-pause", {
+      const response = await fetch("/api/pause", {
         method: "POST",
       });
       const data = await response.json();
 
+      if (!data.success) {
+        throw new Error(data.error);
+      }
+
       toast({
         title: "Success",
-        description: `Voting system has been ${
-          data.isPaused ? "paused" : "unpaused"
-        }`,
+        description: "Voting system has been paused",
       });
     } catch (error) {
       toast({
@@ -223,7 +225,37 @@ export default function VotingSystemControls() {
         description:
           error instanceof Error
             ? error.message
-            : "Failed to toggle pause state",
+            : "Failed to pause voting system",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const unpauseVoting = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/unpause", {
+        method: "POST",
+      });
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.error);
+      }
+
+      toast({
+        title: "Success",
+        description: "Voting system has been unpaused",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to unpause voting system",
         variant: "destructive",
       });
     } finally {
@@ -274,12 +306,12 @@ export default function VotingSystemControls() {
             Force End Voting
           </Button>
 
-          {/* Fourth row  */}
-          <Button onClick={() => togglePause()} disabled={isLoading}>
+          {/* Fourth row */}
+          <Button onClick={unpauseVoting} disabled={isLoading}>
             Unpause Voting
           </Button>
           <Button
-            onClick={() => togglePause()}
+            onClick={pauseVoting}
             disabled={isLoading}
             variant="destructive"
           >

@@ -140,10 +140,12 @@ contract VotingSystem is Ownable, Pausable, ReentrancyGuard {
     }
 
     function pause() external onlyOwner {
+        require(isInitialized, "Voting period not available");
         _pause();
     }
 
     function unpause() external onlyOwner {
+        require(isInitialized, "Voting period not available");
         _unpause();
     }
 
@@ -155,18 +157,5 @@ contract VotingSystem is Ownable, Pausable, ReentrancyGuard {
         emit VotingPeriodForceEnded(originalEnd, endTime);
     }
 
-    // function verifyVote(
-    //     uint256 voteIndex,
-    //     string calldata hash
-    // ) external {
-    //     require(voteIndex < totalVotes, "Invalid vote index");
-        
-    //     Vote storage vote = votes[voteIndex];
-    //     bool isVerified = keccak256(abi.encodePacked(hash)) == 
-    //                      keccak256(abi.encodePacked(vote.verificationHash));
-        
-    //     vote.isVerified = isVerified;
-    //     emit VoteVerified(voteIndex, isVerified);
-    // }
 
 }

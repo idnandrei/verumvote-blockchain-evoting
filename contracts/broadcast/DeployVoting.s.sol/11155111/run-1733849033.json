@@ -1,7 +1,7 @@
 {
   "transactions": [
     {
-      "hash": "0x5f0dd4937cf5a42a87281d423d8c890ce36bdac14e1d50816412c40b648532c0",
+      "hash": null,
       "transactionType": "CREATE",
       "contractName": "VotingToken",
       "contractAddress": "0x855799d481f5385fd894d9e07c36fa59081f2c2b",
@@ -19,7 +19,7 @@
       "isFixedGasLimit": false
     },
     {
-      "hash": "0x83931f53a415f03f490d8f2518ce4dce6f9ace80f852aae0a71e07d353c163c7",
+      "hash": null,
       "transactionType": "CREATE",
       "contractName": "MerkleAirdrop",
       "contractAddress": "0x47e682ca5600e5acd9cd09b22841db691ce12d54",
@@ -60,12 +60,9 @@
   ],
   "receipts": [],
   "libraries": [],
-  "pending": [
-    "0x5f0dd4937cf5a42a87281d423d8c890ce36bdac14e1d50816412c40b648532c0",
-    "0x83931f53a415f03f490d8f2518ce4dce6f9ace80f852aae0a71e07d353c163c7"
-  ],
+  "pending": [],
   "returns": {},
-  "timestamp": 1733851735,
+  "timestamp": 1733849033,
   "chain": 11155111,
   "commit": null
 }

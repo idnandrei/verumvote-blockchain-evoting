@@ -14,7 +14,7 @@ contract DeployVoting is Script {
     function run() public {
         vm.startBroadcast();
         
-        bytes32 s_merkleRoot = 0xbd0673728cc32da06271cb4a7bdd925d8a5cf25f7b97d06af9bbda95a80688f0;
+        bytes32 s_merkleRoot = 0xc6125fc07bef2ffb32292bbbf5010e3d1b104d1c507d4315c3c65d7230a4ff0c;
         
         // Deploy contracts
         VotingToken token = new VotingToken();

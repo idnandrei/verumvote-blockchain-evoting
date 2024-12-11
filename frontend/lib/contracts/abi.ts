@@ -152,7 +152,6 @@ export const VotingSystemABI = [
         internalType: "string",
       },
       { name: "timestamp", type: "uint256", internalType: "uint256" },
-      { name: "isVerified", type: "bool", internalType: "bool" },
     ],
     stateMutability: "view",
   },
